@@ -1,0 +1,201 @@
+/* Contenedor principal */
+.juegos-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Barra de navegación */
+  .juegos-navbar {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .juegos-title {
+    margin: 0;
+    font-size: 2rem;
+  }
+  
+  .juegos-navbar-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  /* Contenedor de búsqueda */
+  .juegos-search-container {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .juegos-search-input {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    width: 200px;
+  }
+  
+  /* Botón de cerrar sesión */
+  .juegos-logout-button {
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .juegos-logout-button:hover {
+    background-color: #c82333;
+  }
+  
+  /* Contenido principal */
+  .juegos-content {
+    display: flex;
+    gap: 20px;
+  }
+  
+  /* Formulario para agregar juegos */
+  .juegos-add-game-form {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 300px;
+  }
+  
+  .juegos-form-title {
+    margin-top: 0;
+    font-size: 1.5rem;
+  }
+  
+  .juegos-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .juegos-form-group {
+    text-align: left;
+  }
+  
+  .juegos-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+    font-weight: bold;
+  }
+  
+  .juegos-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  .juegos-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+  
+  .juegos-submit-button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .juegos-submit-button:hover {
+    background-color: #218838;
+  }
+  
+  /* Lista de juegos */
+  .juegos-games-list {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex-grow: 1;
+  }
+  
+  .juegos-list-title {
+    margin-top: 0;
+    font-size: 1.5rem;
+  }
+  
+  .juegos-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .juegos-game-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .juegos-game-item:last-child {
+    border-bottom: none;
+  }
+  
+  .juegos-game-name {
+    font-weight: bold;
+  }
+  
+  .juegos-game-category {
+    color: #555;
+  }
+  
+  .juegos-game-price {
+    color: #28a745;
+    font-weight: bold;
+  }
+
+  .juegos-game-image{
+    width: 150px;
+    height: 100px;
+  }
+
+
+  .botones{
+    display: grid;
+  }
+
+  .juegos-edit-button{
+    background-color: #007bff;
+    color: white;
+    width: 60px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: -80px;
+  }
+
+  .juegos-delete-button {
+    margin-top: 5px;
+    background-color: #ff4d4d;
+    color: white;
+    width: 60px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .juegos-delete-button:hover {
+    background-color: #ff1a1a;
+  }
