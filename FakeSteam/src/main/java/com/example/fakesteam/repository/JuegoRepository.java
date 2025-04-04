@@ -1,10 +1,10 @@
 package com.example.fakesteam.repository;
 
 import com.example.fakesteam.entity.Juego;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
-public interface JuegoRepository extends JpaRepository<Juego, Long> {
+public interface JuegoRepository extends MongoRepository<Juego, String> {
     List<Juego> findByNombreContaining(String nombre);
     List<Juego> findByCategoria(String categoria);
 }

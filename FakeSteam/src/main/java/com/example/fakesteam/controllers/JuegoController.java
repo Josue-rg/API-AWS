@@ -65,7 +65,7 @@ public class JuegoController {
 
     @PutMapping("/editar/{id}")
     public ResponseEntity<Juego> updateJuego(
-            @PathVariable Long id,
+            @PathVariable String id,
             @RequestParam("nombre") String nombre,
             @RequestParam("precio") double precio,
             @RequestParam("categoria") String categoria,
@@ -100,7 +100,7 @@ public class JuegoController {
     }
 
     @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<Void> deleteJuego(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteJuego(@PathVariable String id) {
         try {
             Juego juego = repository.findById(id).orElseThrow(() -> new RuntimeException("Juego no encontrado"));
             repository.delete(juego);
@@ -110,10 +110,8 @@ public class JuegoController {
         }
     }
 
-
-
     @GetMapping("/imagen/{id}")
-    public ResponseEntity<byte[]> getImagen(@PathVariable Long id) {
+    public ResponseEntity<byte[]> getImagen(@PathVariable String id) {
         Juego juego = repository.findById(id).orElseThrow(() -> new RuntimeException("Juego no encontrado"));
         return ResponseEntity.ok().body(juego.getImg());
     }

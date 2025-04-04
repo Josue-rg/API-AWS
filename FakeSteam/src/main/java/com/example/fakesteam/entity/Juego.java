@@ -1,33 +1,64 @@
 package com.example.fakesteam.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.index.Indexed;
 
-@Entity
+@Document(collection = "juegos")
 public class Juego {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
+
+    @Indexed
     private String nombre;
+
     private double precio;
-    @Lob
-    private byte[] img;  // Usamos byte[] para almacenar la imagen en formato binario
+
+    private byte[] img;  // Almacenamiento binario para la imagen
 
     private String categoria;
+
     public Juego() {}
 
-    // Getters y Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    // Getters y setters
+    public String getId() {
+        return id;
+    }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public double getPrecio() { return precio; }
-    public void setPrecio(double precio) { this.precio = precio; }
+    public String getNombre() {
+        return nombre;
+    }
 
-    public byte[] getImg() { return img; }
-    public void setImg(byte[] img) { this.img = img; }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-    public String getCategoria() { return categoria; }
-    public void setCategoria(String categoria) { this.categoria = categoria; }
+    public double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
+
+    public byte[] getImg() {
+        return img;
+    }
+
+    public void setImg(byte[] img) {
+        this.img = img;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
 }

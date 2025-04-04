@@ -41,6 +41,7 @@ const Juegos = () => {
 
     try {
       if (editando) {
+        // Usamos el id como string para MongoDB
         await axios.put(`http://localhost:8080/juegos/editar/${juegoEditando.id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
@@ -96,6 +97,7 @@ const Juegos = () => {
   // Manejar la eliminación de un juego
   const handleDelete = async (id) => {
     try {
+      // El id se maneja como string para MongoDB
       await axios.delete(`http://localhost:8080/juegos/eliminar/${id}`);
       setJuegos((prevJuegos) => prevJuegos.filter((juego) => juego.id !== id));
     } catch (error) {

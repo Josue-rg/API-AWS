@@ -21,6 +21,9 @@ const Login = () => {
         correo,
         contraseña,
       });
+      
+      // Con MongoDB, asegúrate de que la respuesta de usuario 
+      // sea tratada correctamente, incluso con el ID como string
       login(response.data);
     } catch (err) {
       setError('Usuario no encontrado o credenciales incorrectas');
@@ -36,6 +39,8 @@ const Login = () => {
         correo: correoRegistro,
         contraseña: contraseñaRegistro,
       });
+      
+      // Con MongoDB, el ID del usuario se maneja como string
       alert(`Usuario ${response.data.nombre} registrado exitosamente.`);
       setShowRegisterModal(false);
       setNombreRegistro('');
