@@ -14,6 +14,43 @@ const Juegos = () => {
   const [juegoEditando, setJuegoEditando] = useState(null);
   const [searchNombre, setSearchNombre] = useState('');
   const [searchCategoria, setSearchCategoria] = useState('');
+  const [modalAlert, setModalAlert] = useState(false);
+  const [juegoEliminar, setJuegoEliminar] = useState(null);
+
+  const opeNModal = (juego) => {
+    setJuegoEliminar(juego.id);
+    setModalAlert(true);
+  }
+  const cerrarModal = () => {
+    setModalAlert(false);
+    setJuegoEliminar(null);
+  }
+
+  const confirmarEliminacion = async () => {
+    try {
+      await axios.delete(`http://localhost:8080/juegos/eliminar/${juegoEliminar}`);
+      setJuegos((prevJuegos) => prevJuegos.filter((juego) => juego.id !== juegoEliminar));
+      cerrarModal(); // Cerrar el modal después de eliminar
+    } catch (error) {
+      console.error('Error al eliminar el juego:', error);
+      alert('Error al eliminar el juego. Por favor, inténtalo de nuevo.');
+    }
+  }
+
+  const modal = (
+    <div className="modal">
+      <div className="modal-overlay" onClick={cerrarModal}></div>
+      <div className="modal-content">
+        <h2 className="modal-title">¿Seguro que quieres eliminar este juego?</h2>
+        <p className="modal-message">Esta acción no se puede deshacer.</p>
+        <div className='modal-buttons-container' style={{ display: 'flex', justifyContent: 'space-between' }}> 
+          <button className="modal-button" onClick={confirmarEliminacion}>Eliminar</button>
+          <button className="modal-button" onClick={cerrarModal}>Cancelar</button>
+        </div>
+        </div>
+    </div>
+  )
+
 
   // Obtener la lista de juegos al cargar el componente
   useEffect(() => {
@@ -121,6 +158,7 @@ const Juegos = () => {
 
   return (
     <div className="juegos-container">
+      {modalAlert && modal}
       <nav className="juegos-navbar">
         <h1 className="juegos-title">Bienvenido a la Tienda de Juegos</h1>
         <div className="juegos-navbar-actions">
@@ -226,11 +264,12 @@ const Juegos = () => {
                     Editar
                   </button>
                   <button
-                    onClick={() => handleDelete(juego.id)}
+                    onClick={() => opeNModal(juego)}
                     className="juegos-delete-button"
                   >
                     Eliminar
                   </button>
+                  
                 </div>
                 
               </li>
