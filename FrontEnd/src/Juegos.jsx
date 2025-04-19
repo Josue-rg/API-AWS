@@ -54,9 +54,8 @@ const Juegos = () => {
   )
 
 
-  // Obtener la lista de juegos al cargar el componente
   useEffect(() => {
-    if (!user) return; // Si no hay usuario, no hacer la petición
+    if (!user) return;
 
     const fetchJuegos = async () => {
       try {
