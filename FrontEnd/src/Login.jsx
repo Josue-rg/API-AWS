@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
 import './Login.css';
+import { URL_BACKEND } from './config';
 
 const Login = () => {
   const { login } = useAuth();
@@ -17,7 +18,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:8080/usuarios/login', {
+      const response = await axios.post(`${URL_BACKEND}/usuarios/login`, {
         correo,
         contraseña,
       });
@@ -34,7 +35,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:8080/usuarios', {
+      const response = await axios.post(`${URL_BACKEND}/usuarios`, {
         nombre: nombreRegistro,
         correo: correoRegistro,
         contraseña: contraseñaRegistro,

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext'; // Importar el contexto de autenticación
 import './Juego.css';
+import { URL_BACKEND } from './config';
 
 const Juegos = () => {
   const { user, logout } = useAuth(); // Usar el contexto de autenticación
@@ -17,6 +18,7 @@ const Juegos = () => {
   const [modalAlert, setModalAlert] = useState(false);
   const [juegoEliminar, setJuegoEliminar] = useState(null);
 
+
   const opeNModal = (juego) => {
     setJuegoEliminar(juego.id);
     setModalAlert(true);
@@ -28,7 +30,7 @@ const Juegos = () => {
 
   const confirmarEliminacion = async () => {
     try {
-      await axios.delete(`http://localhost:8080/juegos/eliminar/${juegoEliminar}`);
+      await axios.delete(`${URL_BACKEND}/juegos/eliminar/${juegoEliminar}`);
       setJuegos((prevJuegos) => prevJuegos.filter((juego) => juego.id !== juegoEliminar));
       cerrarModal(); // Cerrar el modal después de eliminar
     } catch (error) {
@@ -58,7 +60,7 @@ const Juegos = () => {
 
     const fetchJuegos = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/juegos');
+        const response = await axios.get(`${URL_BACKEND}/juegos`);
         setJuegos(response.data);
       } catch (error) {
         console.error('Error al obtener los juegos:', error);
@@ -79,14 +81,14 @@ const Juegos = () => {
     try {
       if (editando) {
         // Usamos el id como string para MongoDB
-        await axios.put(`http://localhost:8080/juegos/editar/${juegoEditando.id}`, formData, {
+        await axios.put(`/juegos/editar/${juegoEditando.id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
         window.location.reload(); // Recargar la página después de editar
       } else {
-        const response = await axios.post('http://localhost:8080/juegos/crear', formData, {
+        const response = await axios.post(`${URL_BACKEND}/juegos/crear`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -135,7 +137,7 @@ const Juegos = () => {
   const handleDelete = async (id) => {
     try {
       // El id se maneja como string para MongoDB
-      await axios.delete(`http://localhost:8080/juegos/eliminar/${id}`);
+      await axios.delete(`${URL_BACKEND}/juegos/eliminar/${id}`);
       setJuegos((prevJuegos) => prevJuegos.filter((juego) => juego.id !== id));
     } catch (error) {
       console.error('Error al eliminar el juego:', error);
@@ -251,7 +253,7 @@ const Juegos = () => {
                 <span className="juegos-game-price">${juego.precio}</span>
                 {juego.img && (
                   <img
-                    src={`http://localhost:8080/juegos/imagen/${juego.id}`}
+                    src={`${URL_BACKEND}/juegos/imagen/${juego.id}`}
                     alt={juego.nombre}
                     className="juegos-game-image"
                   />
