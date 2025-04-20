@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "juegos")
 public class Juego {
     @Id
-    private Long id;
+    private String id;
     private String nombre;
     private double precio;
     private byte[] img;
@@ -14,7 +14,7 @@ public class Juego {
 
     public Juego() {}
 
-    public Juego(Long id, String nombre, double precio, byte[] img, String categoria) {
+    public Juego(String id, String nombre, double precio, byte[] img, String categoria) {
         this.id = id;
         this.nombre = nombre;
         this.precio = precio;
@@ -23,8 +23,8 @@ public class Juego {
     }
 
     // Getters y Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
