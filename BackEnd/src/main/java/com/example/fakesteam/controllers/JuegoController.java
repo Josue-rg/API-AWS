@@ -1,14 +1,12 @@
 package com.example.fakesteam.controllers;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +25,8 @@ import com.example.fakesteam.repository.JuegoRepository;
 @CrossOrigin(origins = "*")
 @RequestMapping("/juegos")
 public class JuegoController {
+
+    private static final Logger logger = LoggerFactory.getLogger(JuegoController.class);
 
     @Autowired
     private JuegoRepository repository;
@@ -50,18 +50,7 @@ public class JuegoController {
             juego.setCategoria(categoria);
 
             if (file != null && !file.isEmpty()) {
-                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-                byte[] imgBytes = file.getBytes();
-
-                // Crear la carpeta si no existe
-                Path path = Paths.get("imagenes/");
-                if (!Files.exists(path)) {
-                    Files.createDirectories(path);
-                }
-
-                Path filePath = Paths.get("imagenes/" + fileName);
-                Files.write(filePath, imgBytes);
-                juego.setImg(imgBytes);
+                juego.setImg(file.getBytes());
             } else {
                 juego.setImg(null);
             }
@@ -74,7 +63,7 @@ public class JuegoController {
     }
 
     @PutMapping("/editar/{id}")
-    public ResponseEntity<Juego> updateJuego(
+    public ResponseEntity<?> updateJuego(
             @PathVariable String id,
             @RequestParam("nombre") String nombre,
             @RequestParam("precio") double precio,
@@ -82,30 +71,22 @@ public class JuegoController {
             @RequestParam(value = "img", required = false) MultipartFile file) {
         try {
             Juego juego = repository.findById(id).orElseThrow(() -> new RuntimeException("Juego no encontrado"));
-
             juego.setNombre(nombre);
             juego.setPrecio(precio);
             juego.setCategoria(categoria);
-
+            // Manejo de la imagen
             if (file != null && !file.isEmpty()) {
-                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
                 byte[] imgBytes = file.getBytes();
-
-                // Crear la carpeta si no existe
-                Path path = Paths.get("imagenes/");
-                if (!Files.exists(path)) {
-                    Files.createDirectories(path);
-                }
-
-                Path filePath = Paths.get("imagenes/" + fileName);
-                Files.write(filePath, imgBytes);
                 juego.setImg(imgBytes);
-            } // Si no se proporciona una nueva imagen, no se cambia la imagen existente
+                
+            }
 
             Juego updatedJuego = repository.save(juego);
             return ResponseEntity.status(200).body(updatedJuego);
         } catch (IOException e) {
-            return ResponseEntity.status(500).body(null);
+            return ResponseEntity.status(500).body("Error al procesar la imagen: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al actualizar el juego: " + e.getMessage());
         }
     }
 
@@ -122,7 +103,18 @@ public class JuegoController {
 
     @GetMapping("/imagen/{id}")
     public ResponseEntity<byte[]> getImagen(@PathVariable String id) {
-        Juego juego = repository.findById(id).orElseThrow(() -> new RuntimeException("Juego no encontrado"));
-        return ResponseEntity.ok().body(juego.getImg());
+        try {
+            Juego juego = repository.findById(id).orElseThrow(() -> new RuntimeException("Juego no encontrado"));
+            if (juego.getImg() == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok()
+                    .header("Content-Type", "image/jpeg")
+                    .header("Content-Disposition", "inline")
+                    .header("Cache-Control", "public, max-age=3600")
+                    .body(juego.getImg());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
     }
 }

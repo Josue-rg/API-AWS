@@ -1,58 +1,67 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useAuth } from './AuthContext'; // Importar el contexto de autenticación
-import './Juego.css';
-import { URL_BACKEND } from './config';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useAuth } from "./AuthContext"; // Importar el contexto de autenticación
+import "./Juego.css";
+import { URL_BACKEND } from "./config";
 
 const Juegos = () => {
   const { user, logout } = useAuth(); // Usar el contexto de autenticación
   const [juegos, setJuegos] = useState([]);
-  const [nombre, setNombre] = useState('');
-  const [categoria, setCategoria] = useState('');
-  const [precio, setPrecio] = useState('');
+  const [nombre, setNombre] = useState("");
+  const [categoria, setCategoria] = useState("");
+  const [precio, setPrecio] = useState("");
   const [img, setImg] = useState(null);
   const [editando, setEditando] = useState(false);
   const [juegoEditando, setJuegoEditando] = useState(null);
-  const [searchNombre, setSearchNombre] = useState('');
-  const [searchCategoria, setSearchCategoria] = useState('');
+  const [searchNombre, setSearchNombre] = useState("");
+  const [searchCategoria, setSearchCategoria] = useState("");
   const [modalAlert, setModalAlert] = useState(false);
   const [juegoEliminar, setJuegoEliminar] = useState(null);
-
 
   const opeNModal = (juego) => {
     setJuegoEliminar(juego.id);
     setModalAlert(true);
-  }
+  };
   const cerrarModal = () => {
     setModalAlert(false);
     setJuegoEliminar(null);
-  }
+  };
 
   const confirmarEliminacion = async () => {
     try {
       await axios.delete(`${URL_BACKEND}/juegos/eliminar/${juegoEliminar}`);
-      setJuegos((prevJuegos) => prevJuegos.filter((juego) => juego.id !== juegoEliminar));
+      setJuegos((prevJuegos) =>
+        prevJuegos.filter((juego) => juego.id !== juegoEliminar)
+      );
       cerrarModal(); // Cerrar el modal después de eliminar
     } catch (error) {
-      console.error('Error al eliminar el juego:', error);
-      alert('Error al eliminar el juego. Por favor, inténtalo de nuevo.');
+      console.error("Error al eliminar el juego:", error);
+      alert("Error al eliminar el juego. Por favor, inténtalo de nuevo.");
     }
-  }
+  };
 
   const modal = (
     <div className="modal">
       <div className="modal-overlay" onClick={cerrarModal}></div>
       <div className="modal-content">
-        <h2 className="modal-title">¿Seguro que quieres eliminar este juego?</h2>
+        <h2 className="modal-title">
+          ¿Seguro que quieres eliminar este juego?
+        </h2>
         <p className="modal-message">Esta acción no se puede deshacer.</p>
-        <div className='modal-buttons-container' style={{ display: 'flex', justifyContent: 'space-between' }}> 
-          <button className="modal-button" onClick={confirmarEliminacion}>Eliminar</button>
-          <button className="modal-button" onClick={cerrarModal}>Cancelar</button>
+        <div
+          className="modal-buttons-container"
+          style={{ display: "flex", justifyContent: "space-between" }}
+        >
+          <button className="modal-button" onClick={confirmarEliminacion}>
+            Eliminar
+          </button>
+          <button className="modal-button" onClick={cerrarModal}>
+            Cancelar
+          </button>
         </div>
-        </div>
+      </div>
     </div>
-  )
-
+  );
 
   useEffect(() => {
     if (!user) return;
@@ -62,7 +71,7 @@ const Juegos = () => {
         const response = await axios.get(`${URL_BACKEND}/juegos`);
         setJuegos(response.data);
       } catch (error) {
-        console.error('Error al obtener los juegos:', error);
+        console.error("Error al obtener los juegos:", error);
       }
     };
     fetchJuegos();
@@ -72,45 +81,75 @@ const Juegos = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append('nombre', nombre);
-    formData.append('categoria', categoria);
-    formData.append('precio', parseFloat(precio));
-    if (img) formData.append('img', img);
+    formData.append("nombre", nombre);
+    formData.append("categoria", categoria);
+    formData.append("precio", parseFloat(precio));
+    if (img) formData.append("img", img);
 
     try {
+      console.log("FormData", formData.get("img"));
       if (editando) {
-        // Usamos el id como string para MongoDB
-        await axios.put(`/juegos/editar/${juegoEditando.id}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        window.location.reload(); // Recargar la página después de editar
+        const response = await axios.put(
+          `${URL_BACKEND}/juegos/editar/${juegoEditando.id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          // Actualizar la lista de juegos
+          const updatedJuegos = juegos.map((juego) =>
+            juego.id === juegoEditando.id ? response.data : juego
+          );
+          setJuegos(updatedJuegos);
+
+          window.location.reload();
+          // Limpiar el formulario
+          setNombre("");
+          setCategoria("");
+          setPrecio("");
+          setImg(null);
+          setEditando(false);
+          setJuegoEditando(null);
+        } else {
+          alert("Error al actualizar el juego: " + response.data);
+        }
       } else {
-        const response = await axios.post(`${URL_BACKEND}/juegos/crear`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+        const response = await axios.post(
+          `${URL_BACKEND}/juegos/crear`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
         setJuegos((prevJuegos) => [...prevJuegos, response.data]);
       }
 
       // Limpiar el formulario
-      setNombre('');
-      setCategoria('');
-      setPrecio('');
+      setNombre("");
+      setCategoria("");
+      setPrecio("");
       setImg(null);
       setEditando(false);
       setJuegoEditando(null);
     } catch (error) {
-      console.error('Error al guardar el juego:', error.response ? error.response.data : error.message);
-      alert('Error al guardar el juego. Por favor, verifica los datos y vuelve a intentarlo.');
+      console.error("Error al guardar el juego:", error);
+      const errorMessage =
+        error.response?.data ||
+        "Error al guardar el juego. Por favor, verifica los datos y vuelve a intentarlo.";
+      alert(errorMessage);
     }
   };
 
   // Manejar el cambio de imagen
   const handleImageChange = (e) => {
     setImg(e.target.files[0]);
+    console.log("target", e.target.files[0]);
   };
 
   // Manejar la edición de un juego
@@ -120,15 +159,16 @@ const Juegos = () => {
     setPrecio(juego.precio);
     setJuegoEditando(juego);
     setEditando(true);
+    setImg(null);
   };
 
   // Cancelar la edición
   const handleCancelEdit = () => {
     setEditando(false);
     setJuegoEditando(null);
-    setNombre('');
-    setCategoria('');
-    setPrecio('');
+    setNombre("");
+    setCategoria("");
+    setPrecio("");
     setImg(null);
   };
 
@@ -139,8 +179,8 @@ const Juegos = () => {
       await axios.delete(`${URL_BACKEND}/juegos/eliminar/${id}`);
       setJuegos((prevJuegos) => prevJuegos.filter((juego) => juego.id !== id));
     } catch (error) {
-      console.error('Error al eliminar el juego:', error);
-      alert('Error al eliminar el juego. Por favor, inténtalo de nuevo.');
+      console.error("Error al eliminar el juego:", error);
+      alert("Error al eliminar el juego. Por favor, inténtalo de nuevo.");
     }
   };
 
@@ -187,7 +227,9 @@ const Juegos = () => {
 
       <div className="juegos-content">
         <div className="juegos-add-game-form">
-          <h2 className="juegos-form-title">{editando ? 'Editar Juego' : 'Agregar Nuevo Juego'}</h2>
+          <h2 className="juegos-form-title">
+            {editando ? "Editar Juego" : "Agregar Nuevo Juego"}
+          </h2>
           <form onSubmit={handleSubmit} className="juegos-form">
             <div className="juegos-form-group">
               <label className="juegos-label">Nombre:</label>
@@ -225,10 +267,11 @@ const Juegos = () => {
                 type="file"
                 onChange={handleImageChange}
                 className="juegos-input"
+                accept="image/*"
               />
             </div>
             <button type="submit" className="juegos-submit-button">
-              {editando ? 'Actualizar Juego' : 'Agregar Juego'}
+              {editando ? "Actualizar Juego" : "Agregar Juego"}
             </button>
             {editando && (
               <button
@@ -255,9 +298,12 @@ const Juegos = () => {
                     src={`${URL_BACKEND}/juegos/imagen/${juego.id}`}
                     alt={juego.nombre}
                     className="juegos-game-image"
+                    onError={(e) => {
+                      e.target.style.display = "none";
+                    }}
                   />
                 )}
-                <div className='botones'>
+                <div className="botones">
                   <button
                     onClick={() => handleEdit(juego)}
                     className="juegos-edit-button"
@@ -270,9 +316,7 @@ const Juegos = () => {
                   >
                     Eliminar
                   </button>
-                  
                 </div>
-                
               </li>
             ))}
           </ul>
